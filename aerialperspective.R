@@ -1,6 +1,6 @@
 # Perspectiva aérea desde mapa de elevaciones con R
 # www.overfitting.net
-# https://www.overfitting.net/2022/07/construyendo-mapas-de-sombras-hillshade.html
+# https://www.overfitting.net/2022/08/perspectiva-aerea-desde-mapa-de.html
 
 library(data.table)  # fread()
 library(tiff)
