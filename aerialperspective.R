@@ -34,7 +34,11 @@ rm(sierra_11, sierra_12, sierra_21, sierra_22)
 
 
 # DEM 2: Tenerife
-# DEM=readTIFF("tenerifecomposite.tif")*3718  # 2710x3243 in m
+DEM=readTIFF("tenerifecomposite.tif")*3718
+
+
+# DEM 3: Valle del Lozoya
+DEM=readTIFF("vallelozoya.tif")*2426.159
 
 
 dx=25  # DEM resolution (m)
@@ -84,7 +88,7 @@ skyline[skyline==-1]=0  # fill sky with 0 (will invert to 1)
 # Display and save skyline
 skyline=1-skyline/max(skyline)  # normalize and invert
 
-writeTIFF(skyline^(1/1.8),"skyline_tenerife.tif",
+writeTIFF(skyline^(1/1.8),"skyline.tif",
           bits.per.sample=16, compression="LZW")
 
 image(t(skyline[nrow(skyline):1,]), useRaster=TRUE,
