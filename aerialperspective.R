@@ -34,7 +34,7 @@ rm(sierra_11, sierra_12, sierra_21, sierra_22)
 
 
 # DEM 2: Tenerife
-DEM=readTIFF("tenerifecomposite.tif")*3718
+DEM=readTIFF("tenerife.tif")*3718
 
 
 # DEM 3: Valle del Lozoya
