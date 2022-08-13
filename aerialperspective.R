@@ -61,15 +61,16 @@ image(t(DEM[nrow(DEM):1,]), useRaster=TRUE,
 # Build aerial perspective
 skyline=array(-1, c(RANGE,DIMY))  # skyline array
 
+# Vectorised main loop (pretty quick)
 for (val in MIN:MAX) {  # loop through all possible altitudes
-    print(paste0("Alt: ", val, "/", RANGE))  # find pixels with altitude==val
+    print(paste0("Alt: ", val, "/", RANGE))  # find pixels with altitude=val
     df=as.data.frame(which(DEM==val, arr.ind=TRUE))  # dataframe to aggregate
     colnames(df)=c('X','Y')  # X and Y are DEM coordinates
-    df=aggregate(X ~ Y, df, max)  # max=closest dist to observer for altitude
+    df=aggregate(X ~ Y, df, max)  # max=closest dist. to observer for altitude
     skyline[RANGE-val+1, df$Y]=df$X  # store distances to observer
 }
 
-# Clean missing or wrong data (slooooooow)
+# Clean missing or wrong data (that's slooooooow!)
 NCOLS=ncol(skyline)
 for (col in 1:NCOLS) {
     print(paste0("Col: ", col, "/", NCOLS))
@@ -94,4 +95,3 @@ writeTIFF(skyline^(1/1.8),"skyline.tif",
 image(t(skyline[nrow(skyline):1,]), useRaster=TRUE,
       col=c(gray.colors(256, start=0, end=1, gamma=1.8)),
       asp=nrow(skyline)/ncol(skyline), axes=FALSE)
-
