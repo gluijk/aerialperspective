@@ -47,7 +47,7 @@ DIMY=ncol(DEM)
 f=2  # Z scale factor
 
 DEM=round(DEM/dx*f)  # round altitudes to a reduced integer set
-DEM=DEM-min(DEM)+1  # values>=1, 0 is reserved for black or no data
+DEM=DEM-min(DEM)+1  # values>=1, 0 is reserved for no data
 MIN=min(DEM)
 MAX=max(DEM)
 RANGE=MAX-MIN+1
@@ -70,20 +70,21 @@ for (val in MIN:MAX) {  # loop through all possible altitudes
     skyline[RANGE-val+1, df$Y]=df$X  # store distances to observer
 }
 
-# Clean missing or wrong data (that's slooooooow!)
+# Clean missing (non existent altitude) or wrong (hidden altitude) data
 NCOLS=ncol(skyline)
+NROWS=nrow(skyline)
 for (col in 1:NCOLS) {
     print(paste0("Col: ", col, "/", NCOLS))
     row=1
-    while (row < nrow(skyline) & skyline[row, col] == -1) row=row+1
-    while (row < nrow(skyline) & skyline[row, col] != -1) {
+    while (row < NROWS & skyline[row, col] == -1) row=row+1
+    while (row < NROWS & skyline[row, col] != -1) {
         if (skyline[row+1, col] < skyline[row, col])
             skyline[row+1, col]=skyline[row, col]
         row=row+1
     }
 }
 
-skyline[skyline==-1]=0  # fill sky with 0 (will invert to 1)
+skyline[skyline==-1]=0  # fill sky with 0=no data (will invert to 1)
 
 
 # Display and save skyline
