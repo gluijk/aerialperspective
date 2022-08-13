@@ -69,7 +69,7 @@ for (val in MIN:MAX) {  # loop through all possible altitudes
     skyline[RANGE-val+1, df$Y]=df$X  # store distances to observer
 }
 
-# Clean missing or wrong data
+# Clean missing or wrong data (slooooooow)
 NCOLS=ncol(skyline)
 for (col in 1:NCOLS) {
     print(paste0("Col: ", col, "/", NCOLS))
