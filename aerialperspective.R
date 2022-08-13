@@ -62,17 +62,17 @@ image(t(DEM[nrow(DEM):1,]), useRaster=TRUE,
 skyline=array(-1, c(RANGE,DIMY))  # skyline array
 
 for (val in MIN:MAX) {  # loop through all possible altitudes
-    print(paste0("Altitude: ", val, "/", RANGE))
-    i=which(DEM==val, arr.ind=TRUE)  # find location of pixels with altitude
-    colnames(i)=c('X','Y')  # X and Y are DEM coordinates
-    df=as.data.frame(i)  # convert to dataframe to easily aggregate
+    print(paste0("Alt: ", val, "/", RANGE))  # find pixels with altitude==val
+    df=as.data.frame(which(DEM==val, arr.ind=TRUE))  # dataframe to aggregate
+    colnames(df)=c('X','Y')  # X and Y are DEM coordinates
     df=aggregate(X ~ Y, df, max)  # max=closest dist to observer for altitude
     skyline[RANGE-val+1, df$Y]=df$X  # store distances to observer
 }
 
 # Clean missing or wrong data
-for (col in 1:ncol(skyline)) {
-    print(paste0("Column: ", col, "/", ncol(skyline)))
+NCOLS=ncol(skyline)
+for (col in 1:NCOLS) {
+    print(paste0("Col: ", col, "/", NCOLS))
     row=1
     while (row < nrow(skyline) & skyline[row, col] == -1) row=row+1
     while (row < nrow(skyline) & skyline[row, col] != -1) {
