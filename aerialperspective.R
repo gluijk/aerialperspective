@@ -61,7 +61,7 @@ image(t(DEM[nrow(DEM):1,]), useRaster=TRUE,
 # Build aerial perspective
 skyline=array(-1, c(RANGE,DIMY))  # skyline array
 
-# Vectorised main loop (pretty quick)
+# Vectorised main loop
 for (val in MIN:MAX) {  # loop through all possible altitudes
     print(paste0("Alt: ", val, "/", RANGE))  # find pixels with altitude=val
     df=as.data.frame(which(DEM==val, arr.ind=TRUE))  # dataframe to aggregate
