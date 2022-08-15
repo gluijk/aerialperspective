@@ -41,10 +41,14 @@ rm(sierra_11, sierra_12, sierra_21, sierra_22)
 # DEM=readTIFF("vallelozoya.tif")*2426.159
 
 
+# DEM 4: sierra de Alicante
+# DEM=readTIFF("puigcampana.tif")*1555.038
+
+
 dx=25  # DEM resolution (m)
 DIMX=nrow(DEM)
 DIMY=ncol(DEM)
-f=2  # Z scale factor
+f=1  # Z scale factor
 
 DEM=round(DEM/dx*f)  # round altitudes to a reduced integer set
 DEM=DEM-min(DEM)+1  # values>=1, 0 is reserved for no data
