@@ -42,10 +42,18 @@ rm(sierra_11, sierra_12, sierra_21, sierra_22)
 
 
 # DEM 4: sierra de Alicante
-# DEM=readTIFF("puigcampana.tif")*1555.038
+# DEM=readTIFF("sierradealicante.tif")*1555.038
 
 
-dx=25  # DEM resolution (m)
+# DEM 5: Montserrat
+# DEM=readTIFF("montserrat.tif")*1235.732
+
+
+# DEM 6: Puig Campana
+# DEM=readTIFF("puigcampana.tif")*1556.244
+
+
+dx=25  # dx=2 for Montserrat and Puig Campana  # DEM resolution (m)
 DIMX=nrow(DEM)
 DIMY=ncol(DEM)
 f=1  # Z scale factor
