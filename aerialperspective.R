@@ -1,4 +1,4 @@
-# Perspectiva aÈrea desde mapa de elevaciones con R
+# Perspectiva a√©rea desde mapa de elevaciones con R
 # www.overfitting.net
 # https://www.overfitting.net/2022/08/perspectiva-aerea-desde-mapa-de.html
 
@@ -7,9 +7,9 @@ library(tiff)
 
 
 # DEM 1: Sierra de Guadarrama
-# Centro de Descargas del Centro Nacional de InformaciÛn Geogr·fica
+# Centro de Descargas del Centro Nacional de Informaci√≥n Geogr√°fica
 # Modelos de elevaciones en formato raster MDT25
-# Cotas en m. ResoluciÛn rejilla=25m
+# Cotas en m. Resoluci√≥n rejilla=25m
 # URL: http://centrodedescargas.cnig.es/CentroDescargas/index.jsp
 
 # Leemos y procesamos datos raster
@@ -91,7 +91,7 @@ for (col in 1:NCOLS) {
     while (row < NROWS & skyline[row, col] == -1) row=row+1
     while (row < NROWS & skyline[row, col] != -1) {
         if (skyline[row+1, col] < skyline[row, col])
-            skyline[row+1, col]=skyline[row, col]
+            skyline[row+1, col] = skyline[row, col]
         row=row+1
     }
 }
