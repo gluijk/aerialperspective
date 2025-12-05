@@ -62,6 +62,7 @@ cppFunction('
 ')
 
 
+
 #################################################
 
 # 1. READ AND PROCESS GEOTIFF DATA
@@ -217,6 +218,7 @@ img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=1)
 
 writeTIFF(1-img/max(img), paste0("profilespicuurriellu.tif"),
           bits.per.sample=16)
+
 
 
 #################################################
