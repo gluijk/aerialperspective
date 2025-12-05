@@ -1,6 +1,6 @@
 # Aerial perspetive of several places
 # www.overfitting.net
-# https://www.overfitting.net/
+# https://www.overfitting.net/2025/12/perspectiva-aerea-desde-mapa-de.html
 
 
 library(terra)  # build blur and resample functions
@@ -64,7 +64,7 @@ cppFunction('
 
 #################################################
 
-# 1. PROCESS GEOTIFF DATA
+# 1. READ AND PROCESS GEOTIFF DATA
 
 # Read GeoTIFF file. Proyección ETRS89:
 # Uso principal: Cartografía y geodesia oficial en Europa (IGN en España, INSPIRE…).
@@ -181,7 +181,7 @@ writeTIFF(1-img/max(img), paste0("profilesmonteaneto.tif"),
 
 #################################################
 
-# 3. ANOTHER EXAMPLE: PICU URRIELLU (NARANJO DE BULNES)
+# 3. PICU URRIELLU (NARANJO DE BULNES)
 
 
 naranjo=mosaic(rast("MDT02-ETRS89-HU30-0056-3-COB2.tif"),
@@ -221,7 +221,7 @@ writeTIFF(1-img/max(img), paste0("profilespicuurriellu.tif"),
 
 #################################################
 
-# 4. ANOTHER EXAMPLE: TORROELLA
+# 4.TORROELLA
 
 torroella1=rast("MDT02-ETRS89-HU31-0297-3-COB2.tif")  # resolution 1.99348m
 plot(torroella1)
@@ -268,4 +268,101 @@ print(paste0("1km over the map of width=", ncol(DEM), " pixels corresponds to ",
 img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=1)
 
 writeTIFF(1-img/max(img), paste0("profiles_torroella_south_roation.tif"),
+          bits.per.sample=16)
+
+
+
+#################################################
+
+# 5. ORDESA
+
+ordesa=mosaic(rast("MDT02-ETRS89-HU31-0146-3-COB2.tif"),
+              rast("MDT02-ETRS89-HU31-0146-4-COB2.tif"),
+              rast("MDT02-ETRS89-HU31-0178-1-COB2.tif"),
+              rast("MDT02-ETRS89-HU31-0178-2-COB2.tif"),
+              fun='mean')
+ordesa
+plot(ordesa)
+RESOLUTION=res(ordesa)[1]  # 2m
+
+# CROP
+cropdef=ext(242000, 260000, 4723000, 4733000)
+ordesacrop=crop(x=ordesa, y=cropdef)
+ordesacrop
+plot(ordesacrop)
+
+MAXIMO=as.integer(global(ordesacrop, "max", na.rm=TRUE))  # 3347m (Monte Perdido)
+
+
+# Convert to matrix and save as TIFF
+DEM=as.matrix(ordesacrop, wide=TRUE)
+defective=which(is.na(DEM))  # fix some NaNs (a whole column of values)
+DEM[defective]=(DEM[defective+nrow(DEM)]+DEM[defective-nrow(DEM)])/2
+hist(DEM, breaks=800)
+
+DEM=DEM-min(DEM)
+MAXIMO=max(DEM)  # new relative max 2441.84m
+writeTIFF(DEM/max(DEM), "ordesa.tif", bits.per.sample=16, compression='LZW')
+# DEM=readTIFF("ordesavalle.tif")*MAXIMO
+
+DEM=DEM-min(DEM)
+MAXIMO=max(DEM)  # new relative max 2168.8m
+
+# Map legend scale
+print(paste0("1km over the map of width=", ncol(DEM), " pixels corresponds to ",
+             round(1000/RESOLUTION), " pixels"))
+
+img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=1)
+
+writeTIFF(1-img/max(img), paste0("profilesordesa.tif"),
+          bits.per.sample=16)
+
+
+
+#################################################
+
+# 6. SIERRA NEVADA
+
+sierranevada=mosaic(rast("PNOA_MDT25_ETRS89_HU30_1009_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1010_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1011_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1012_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1026_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1027_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1028_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1029_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1041_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1042_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1043_LID.tif"),
+              rast("PNOA_MDT25_ETRS89_HU30_1044_LID.tif"),
+              fun='mean')
+sierranevada
+plot(sierranevada)
+RESOLUTION=res(sierranevada)[1]  # 2m
+
+# CROP
+cropdef=ext(440000, 533000, ext(sierranevada)[3], 4130500)
+sierranevadacrop=crop(x=sierranevada, y=cropdef)
+sierranevadacrop
+plot(sierranevadacrop)
+
+MAXIMO=as.integer(global(sierranevadacrop, "max", na.rm=TRUE))  # 3474m (Mulhacén)
+
+
+# Convert to matrix and save as TIFF
+DEM=as.matrix(sierranevadacrop, wide=TRUE)
+DEM=DEM[1:(nrow(DEM)-5),]  # crop some NaNs
+hist(DEM, breaks=800)
+
+DEM=DEM-min(DEM)
+MAXIMO=max(DEM)  # new relative max 3355.75m
+writeTIFF(DEM/max(DEM), "sierranevada.tif", bits.per.sample=16, compression='LZW')
+
+# Map legend scale
+print(paste0("10km over the map of width=", ncol(DEM), " pixels corresponds to ",
+             round(10000/RESOLUTION), " pixels"))
+
+img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=2)
+
+writeTIFF(1-img/max(img), paste0("profilessierranevada.tif"),
           bits.per.sample=16)
