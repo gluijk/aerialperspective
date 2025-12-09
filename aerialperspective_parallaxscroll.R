@@ -1,4 +1,4 @@
-# Aerial perspective with parallax scrolling
+# Aerial perspective with parallax scrolling animation
 # www.overfitting.net
 # https://www.overfitting.net/2025/12/perspectiva-aerea-desde-mapa-de.html
 
@@ -133,7 +133,7 @@ hist(DEM, breaks=800)
 # DEM=DEM-min(DEM)
 DEM=DEM-1800
 DEM[DEM<0]=0
-MAXIMO=max(DEM)  # new relative max 2441.84m -> 1547.02m
+MAXIMO=max(DEM)  # new relative max 1547.02m
 writeTIFF(DEM/max(DEM), "ordesavideo.tif", bits.per.sample=16, compression='LZW')
 
 # Map legend scale
@@ -143,7 +143,7 @@ print(paste0("1km over the map of width=", ncol(DEM), " pixels corresponds to ",
 
 #################################################
 
-# 2. BUILD AERIAL PERSPECTIVE
+# 2. BUILD GLOBAL AERIAL PERSPECTIVE
 
 img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=1)
 writeTIFF(1-img, paste0("profilesordesavideo.tif"),
@@ -162,11 +162,11 @@ OVERLAP=2000
 j=1
 for (x in (ncol(DEM)-OVERLAP+1):ncol(DEM)) {
     alpha=(j-1)/(OVERLAP-1)
-    DEMloop[, x]=DEM[, x]*(1-alpha) + DEM[, j]*alpha
+    DEMloop[, x]=DEM[, x]*(1-alpha) + DEM[, j]*alpha  # progressive linear combination
     j=j+1
 }
 
-DEMloop=DEMloop[, (OVERLAP+1):ncol(DEMloop)]  # drop overlapped area (duplicated)
+DEMloop=DEMloop[, (OVERLAP+1):ncol(DEMloop)]  # drop (now) duplicated area
 writeTIFF(DEMloop/MAXIMO, paste0("ordesavideo_loop.tif"),
           bits.per.sample=16)
 
