@@ -1,4 +1,4 @@
-# Aerial perspective with parallax scrolling animation
+# Aerial perspective in a parallax scrolling animation
 # www.overfitting.net
 # https://www.overfitting.net/2025/12/perspectiva-aerea-desde-mapa-de.html
 
@@ -202,7 +202,6 @@ for (n in 0:2500) {
     writeTIFF(1-img, name, bits.per.sample=8)
 }
 
-# magick -delay 5 -loop 0 profilesordesavideo_loop_*.tif aerial.gif
 
 # MP4 Video (MPEG-4 AVC/H.264):
 # ffmpeg -framerate 24 -i profilesordesavideo_loop_%04d.tif -i racetothemoonclip.wav
