@@ -3,7 +3,7 @@
 # https://www.overfitting.net/2025/12/perspectiva-aerea-desde-mapa-de.html
 
 
-library(terra)  # build blur and resample functions
+library(terra)
 library(tiff)  # save 16-bit TIFF's
 library(Rcpp)
 
