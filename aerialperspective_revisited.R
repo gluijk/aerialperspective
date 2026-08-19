@@ -368,3 +368,51 @@ img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=2)
 
 writeTIFF(1-img/max(img), paste0("profilessierranevada.tif"),
           bits.per.sample=16)
+
+
+
+#################################################
+
+# 7. MACIZO DE MONTGRÍ
+
+torroella1=rast("MDT02-ETRS89-HU31-0297-3-COB2.tif")  # resolution 1.99348m
+plot(torroella1)
+r_new <- rast(ext(torroella1), resolution=2, crs=crs(torroella1))
+torroella1 <- resample(torroella1, r_new, method = "bilinear")
+
+torroella2=rast("MDT02-ETRS89-HU31-0296-4-COB2.tif")  # resolution 2m
+plot(torroella2)
+
+torroella=mosaic(torroella1, torroella2, fun='mean')
+torroella
+plot(torroella)
+RESOLUTION=res(torroella)[1]  # 2m
+
+
+# CROP
+cropdef=ext(508000, 513000, 4653000, 4658000)
+torroellacrop=crop(x=torroella, y=cropdef)
+torroellacrop
+plot(torroellacrop)
+
+MAXIMO=as.integer(global(torroellacrop, "max", na.rm=TRUE))  # 310.233m
+
+
+# Convert to matrix and save as TIFF
+DEM=as.matrix(torroellacrop, wide=TRUE)
+DEM[DEM<0]=0
+hist(DEM, breaks=800)
+
+# From south
+writeTIFF(DEM/max(DEM), "torroella_bis.tif", bits.per.sample=16, compression='LZW')
+DEM=readTIFF("torroella_bis_rotation.tif")*MAXIMO  # +28.34º rotation
+
+# Map legend scale
+print(paste0("1km over the map of width=", ncol(DEM), " pixels corresponds to ",
+             round(1000/RESOLUTION), " pixels"))
+
+img <- aerial_perspective_cpp(DEM, RESOLUTION, fscale=1)
+
+writeTIFF(1-img/max(img), paste0("profiles_torroella_bis_rotation.tif"),
+          bits.per.sample=16)
+
